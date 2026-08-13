@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2685.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Web Mp3tag - Apple Music ID Injector&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Include browser-id3-writer for writing tags directly in browser --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.jsdelivr.net/npm/browser-id3-writer@4.4.0/dist/browser-id3-writer.min.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f0f0f; color: #f0f0f0; max-width: 800px; margin: 30px auto; padding: 20px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>h2 { color: #fa233b; text-align: center; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.dropzone { border: 2px dashed #444; padding: 30px; text-align: center; border-radius: 12px; background: #181818; cursor: pointer; margin-bottom: 20px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.dropzone:hover { border-color: #fa233b; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.track-card { background: #1e1e1e; padding: 15px; margin-top: 10px; border-radius: 8px; border: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>input, button { padding: 10px; border-radius: 6px; border: none; font-size: 14px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>input[type="text"] { background: #2a2a2a; color: #fff; border: 1px solid #444; width: 60%; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>button { background: #fa233b; color: white; font-weight: bold; cursor: pointer; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>button:hover { background: #d91c32; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.search-results { margin-top: 10px; max-height: 200px; overflow-y: auto; background: #161616; border-radius: 6px; padding: 5px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.search-item { padding: 8px; cursor: pointer; border-bottom: 1px solid #222; font-size: 13px; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.search-item:hover { background: #252525; color: #fa233b; }</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.tag-status { color: #4cd964; font-weight: bold; font-size: 13px; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;h2&gt;Web Mp3tag : Apple Music ID Injector&lt;/h2&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="dropzone" id="dropzone"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;p&gt;📂 Drag &amp; Drop your Music File (.mp3) here, or click to select&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="file" id="fileInput" accept=".mp3,.m4a" style="display: none;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="workspace" style="display: none;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="track-card"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;strong id="fileName"&gt;file.mp3&lt;/strong&gt;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>&lt;div style="font-size: 12px; color: #888;" id="fileSize"&gt;0 MB&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;div id="status" class="tag-status"&gt;Ready to tag&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h3&gt;1. Search Apple Music Catalog&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="text" id="searchQuery" placeholder="Search track/artist (e.g., Tere Bina A.R. Rahman)"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button onclick="searchAppleMusic()"&gt;Search&lt;/button&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="searchResults" class="search-results" style="display: none;"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;h3 style="margin-top: 20px;"&gt;2. Selected Catalog ID&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;input type="text" id="catalogIdInput" placeholder="Catalog ID will appear here"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button onclick="injectTagAndDownload()" style="background: #4cd964; color: #000;"&gt;Inject &amp; Download File&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let selectedFile = null;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let fileBuffer = null;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const dropzone = document.getElementById('dropzone');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const fileInput = document.getElementById('fileInput');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>dropzone.onclick = () =&gt; fileInput.click();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>fileInput.onchange = (e) =&gt; handleFile(e.target.files[0]);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>dropzone.ondragover = (e) =&gt; e.preventDefault();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>dropzone.ondrop = (e) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>e.preventDefault();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>handleFile(e.dataTransfer.files[0]);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function handleFile(file) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (!file) return;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>selectedFile = file;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('fileName').innerText = file.name;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('fileSize').innerText = (file.size / (1024*1024)).toFixed(2) + ' MB';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('workspace').style.display = 'block';</p>
+<p class="p2"><span class="Apple-converted-space">            </span></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Pre-fill search query with filename stripped of extension</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.getElementById('searchQuery').value = file.name.replace(/\.[^/.]+$/, "");</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const reader = new FileReader();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>reader.onload = function(e) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>fileBuffer = e.target.result;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>};</p>
+<p class="p1"><span class="Apple-converted-space">            </span>reader.readAsArrayBuffer(file);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>async function searchAppleMusic() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const query = document.getElementById('searchQuery').value;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (!query) return;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>const resDiv = document.getElementById('searchResults');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>resDiv.style.display = 'block';</p>
+<p class="p1"><span class="Apple-converted-space">            </span>resDiv.innerHTML = "&lt;div class='search-item'&gt;Searching Apple servers...&lt;/div&gt;";</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>try {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const response = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&amp;media=music&amp;entity=song&amp;limit=6`);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>const data = await response.json();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (data.results.length === 0) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>resDiv.innerHTML = "&lt;div class='search-item'&gt;No results found.&lt;/div&gt;";</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>resDiv.innerHTML = "";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>data.results.forEach(track =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const div = document.createElement('div');</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>div.className = 'search-item';</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>div.innerHTML = `&lt;strong&gt;${track.trackName}&lt;/strong&gt; — ${track.artistName} &lt;span style="color:#888;"&gt;(ID: ${track.trackId})&lt;/span&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>div.onclick = () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>document.getElementById('catalogIdInput').value = track.trackId;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>resDiv.style.display = 'none';</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>};</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>resDiv.appendChild(div);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>});</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} catch (err) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>resDiv.innerHTML = "&lt;div class='search-item'&gt;Network error querying Apple API.&lt;/div&gt;";</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>async function injectTagAndDownload() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const catalogId = document.getElementById('catalogIdInput').value;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (!catalogId) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>alert('Please select or enter a Catalog ID first!');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>return;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>if (selectedFile.name.endsWith('.mp3')) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>try {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>// Using browser-id3-writer to write custom TXXX user tags (ITUNESCATALOGID)</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const writer = new ID3Writer(fileBuffer);</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>writer.setFrame('TXXX', {</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>description: 'ITUNESCATALOGID',</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>value: catalogId</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>});</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>writer.addTag();</p>
+<p class="p2"><span class="Apple-converted-space">                    </span></p>
+<p class="p1"><span class="Apple-converted-space">                    </span>const taggedBlob = writer.getBlob();</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>downloadBlob(taggedBlob, selectedFile.name);</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>document.getElementById('status').innerText = "Successfully Tagged &amp; Downloaded!";</p>
+<p class="p1"><span class="Apple-converted-space">                </span>} catch (e) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>alert('Error writing MP3 tags: ' + e.message);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else if (selectedFile.name.endsWith('.m4a') || selectedfile.name.endsWith('.mp4')) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>// For M4A/MP4 files in-browser, direct atom rewriting requires a dedicated binary array parser.</p>
+<p class="p1"><span class="Apple-converted-space">                </span>alert('For M4A files, browser-side binary atom injection is complex. Use Mp3tag desktop for M4A containers, or use this tool for MP3s! Alternatively, you can host a lightweight backend script.');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>alert('Unsupported file format for direct browser tagging.');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function downloadBlob(blob, filename) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const url = URL.createObjectURL(blob);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>const a = document.createElement('a');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>a.href = url;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>a.download = filename;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.body.appendChild(a);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>a.click();</p>
+<p class="p1"><span class="Apple-converted-space">            </span>document.body.removeChild(a);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
