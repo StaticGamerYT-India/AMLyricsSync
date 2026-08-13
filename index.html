@@ -70,10 +70,12 @@
 
             const ffmpeg = new ffmpegModule.FFmpeg();
             const baseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/esm';
+            const workerBaseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm';
 
             await ffmpeg.load({
                 coreURL: await utilModule.toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
-                wasmURL: await utilModule.toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm')
+                wasmURL: await utilModule.toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+                workerURL: await utilModule.toBlobURL(`${workerBaseURL}/worker.js`, 'text/javascript')
             });
 
             ffmpegResources = { ffmpeg, fetchFile: utilModule.fetchFile };
