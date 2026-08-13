@@ -27,8 +27,8 @@
     <h2>Web Mp3tag : Apple Music ID Injector</h2>
     
     <div class="dropzone" id="dropzone">
-        <p>📂 Drag & Drop your Music File (.mp3) here, or click to select</p>
-        <input type="file" id="fileInput" accept=".mp3,.m4a" style="display: none;">
+        <p>📂 Drag & Drop your Music File (.mp3, .m4a, .mp4) here, or click to select</p>
+        <input type="file" id="fileInput" accept=".mp3,.m4a,.mp4" style="display: none;">
     </div>
 
     <div id="workspace" style="display: none;">
@@ -54,6 +54,12 @@
     <script>
         let selectedFile = null;
         let fileBuffer = null;
+
+        function getFileExtension(fileName) {
+            const dotIndex = fileName.lastIndexOf('.');
+            if (dotIndex === -1) return '';
+            return fileName.slice(dotIndex).toLowerCase();
+        }
 
         const dropzone = document.getElementById('dropzone');
         const fileInput = document.getElementById('fileInput');
@@ -124,7 +130,9 @@
                 return;
             }
 
-            if (selectedFile.name.endsWith('.mp3')) {
+            const fileExt = getFileExtension(selectedFile.name);
+
+            if (fileExt === '.mp3') {
                 try {
                     // Using browser-id3-writer to write custom TXXX user tags (ITUNESCATALOGID)
                     const writer = new ID3Writer(fileBuffer);
@@ -140,9 +148,9 @@
                 } catch (e) {
                     alert('Error writing MP3 tags: ' + e.message);
                 }
-            } else if (selectedFile.name.endsWith('.m4a') || selectedfile.name.endsWith('.mp4')) {
+            } else if (fileExt === '.m4a' || fileExt === '.mp4') {
                 // For M4A/MP4 files in-browser, direct atom rewriting requires a dedicated binary array parser.
-                alert('For M4A files, browser-side binary atom injection is complex. Use Mp3tag desktop for M4A containers, or use this tool for MP3s! Alternatively, you can host a lightweight backend script.');
+                alert('MP4/M4A file detected. Browser-side atom injection is complex for MP4 containers. Use Mp3tag desktop for MP4/M4A, or use this tool for MP3s.');
             } else {
                 alert('Unsupported file format for direct browser tagging.');
             }
