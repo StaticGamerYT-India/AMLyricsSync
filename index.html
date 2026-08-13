@@ -73,9 +73,9 @@
             const workerBaseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm';
 
             await ffmpeg.load({
+                classWorkerURL: await utilModule.toBlobURL(`${workerBaseURL}/worker.js`, 'text/javascript'),
                 coreURL: await utilModule.toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
-                wasmURL: await utilModule.toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
-                workerURL: await utilModule.toBlobURL(`${workerBaseURL}/worker.js`, 'text/javascript')
+                wasmURL: await utilModule.toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm')
             });
 
             ffmpegResources = { ffmpeg, fetchFile: utilModule.fetchFile };
