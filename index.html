@@ -54,11 +54,64 @@
     <script>
         let selectedFile = null;
         let fileBuffer = null;
+        let ffmpegResources = null;
 
         function getFileExtension(fileName) {
             const dotIndex = fileName.lastIndexOf('.');
             if (dotIndex === -1) return '';
             return fileName.slice(dotIndex).toLowerCase();
+        }
+
+        async function getFfmpegResources() {
+            if (ffmpegResources) return ffmpegResources;
+
+            const ffmpegModule = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js');
+            const utilModule = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/esm/index.js');
+
+            const ffmpeg = new ffmpegModule.FFmpeg();
+            const baseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/esm';
+
+            await ffmpeg.load({
+                coreURL: await utilModule.toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
+                wasmURL: await utilModule.toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm')
+            });
+
+            ffmpegResources = { ffmpeg, fetchFile: utilModule.fetchFile };
+            return ffmpegResources;
+        }
+
+        async function injectMp4LikeTagAndDownload(catalogId, fileExt) {
+            const statusEl = document.getElementById('status');
+            statusEl.innerText = 'Processing MP4/M4A...';
+
+            const { ffmpeg, fetchFile } = await getFfmpegResources();
+            const inputName = `input${fileExt}`;
+            const outputName = `output${fileExt}`;
+
+            await ffmpeg.writeFile(inputName, await fetchFile(selectedFile));
+            await ffmpeg.exec([
+                '-i',
+                inputName,
+                '-c',
+                'copy',
+                '-metadata',
+                `ITUNESCATALOGID=${catalogId}`,
+                outputName
+            ]);
+
+            const outputData = await ffmpeg.readFile(outputName);
+            const mimeType = fileExt === '.mp4' ? 'video/mp4' : 'audio/mp4';
+            const taggedBlob = new Blob([outputData.buffer], { type: mimeType });
+
+            try {
+                await ffmpeg.deleteFile(inputName);
+                await ffmpeg.deleteFile(outputName);
+            } catch (cleanupErr) {
+                // Best-effort cleanup in FFmpeg virtual FS.
+            }
+
+            downloadBlob(taggedBlob, selectedFile.name);
+            statusEl.innerText = 'Successfully Tagged & Downloaded!';
         }
 
         const dropzone = document.getElementById('dropzone');
@@ -149,8 +202,12 @@
                     alert('Error writing MP3 tags: ' + e.message);
                 }
             } else if (fileExt === '.m4a' || fileExt === '.mp4') {
-                // For M4A/MP4 files in-browser, direct atom rewriting requires a dedicated binary array parser.
-                alert('MP4/M4A file detected. Browser-side atom injection is complex for MP4 containers. Use Mp3tag desktop for MP4/M4A, or use this tool for MP3s.');
+                try {
+                    await injectMp4LikeTagAndDownload(catalogId, fileExt);
+                } catch (e) {
+                    alert('Error writing MP4/M4A tags: ' + e.message);
+                    document.getElementById('status').innerText = 'Tagging failed';
+                }
             } else {
                 alert('Unsupported file format for direct browser tagging.');
             }
